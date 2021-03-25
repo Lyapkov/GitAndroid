@@ -29,6 +29,7 @@ class UserPresenter(val uiScheduler: Scheduler, val usersRepo: IGithubUsersRepo,
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
         viewState.setLogin(user.login)
+        viewState.init()
         loadData()
     }
 
