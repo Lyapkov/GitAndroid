@@ -9,13 +9,15 @@ import com.example.android2.mvp.model.api.ApiHolder
 import moxy.MvpAppCompatFragment
 import moxy.ktx.moxyPresenter
 import com.example.android2.mvp.model.entity.GithubUser
-import com.example.android2.mvp.model.repo.RetrofitGithubUsersRepo
+import com.example.android2.mvp.model.entity.room.db.Database
+import com.example.android2.mvp.model.repo.RetrofitGithubRepositoriesRepo
 import com.example.android2.mvp.presenter.UserPresenter
 import com.example.android2.mvp.view.UserView
 import com.example.android2.ui.App
 import com.example.android2.ui.BackButtonListener
-import com.example.android2.ui.adapter.ReposRVAdapter
-import com.example.android2.ui.adapter.UsersRVAdapter
+import com.example.android2.ui.adapter.RepositoriesRVAdapter
+import com.example.android2.ui.navigation.AndroidScreens
+import com.example.android2.ui.network.AndroidNetworkStatus
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 
 class UserFragment : MvpAppCompatFragment(), UserView, BackButtonListener {
@@ -31,19 +33,23 @@ class UserFragment : MvpAppCompatFragment(), UserView, BackButtonListener {
     }
 
     val presenter: UserPresenter by moxyPresenter {
-        val user =
-            arguments?.getParcelable<GithubUser>(USER_ARG) as GithubUser //При отсутствии аргумента приложение упадет. Так задумано.
+        val user = arguments?.getParcelable<GithubUser>(USER_ARG) as GithubUser
         UserPresenter(
             AndroidSchedulers.mainThread(),
-            RetrofitGithubUsersRepo(ApiHolder.api),
+            RetrofitGithubRepositoriesRepo(
+                ApiHolder.api,
+                AndroidNetworkStatus(App.instance),
+                Database.getInstance()
+            ),
             App.instance.router,
-            user
+            user,
+            AndroidScreens()
         )
     }
 
-    var adapter: ReposRVAdapter? = null
-
     private var vb: FragmentUserBinding? = null
+
+    var adapter: RepositoriesRVAdapter? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -59,19 +65,16 @@ class UserFragment : MvpAppCompatFragment(), UserView, BackButtonListener {
         vb = null
     }
 
-    override fun setLogin(text: String) {
-        vb?.tvLogin?.text = text
-    }
-
     override fun init() {
-        vb?.rvRepos?.layoutManager = LinearLayoutManager(context)
-        adapter = ReposRVAdapter(presenter.reposListPresenter)
-        vb?.rvRepos?.adapter = adapter
+        vb?.rvRepositories?.layoutManager = LinearLayoutManager(context)
+        adapter = RepositoriesRVAdapter(presenter.repositoriesListPresenter)
+        vb?.rvRepositories?.adapter = adapter
     }
 
     override fun updateList() {
         adapter?.notifyDataSetChanged()
     }
+
 
     override fun backPressed() = presenter.backPressed()
 }

@@ -10,9 +10,7 @@ import com.example.android2.mvp.presenter.list.IUserListPresenter
 import com.example.android2.mvp.view.UsersView
 import com.example.android2.mvp.view.list.UserItemView
 
-class UsersPresenter(val uiScheduler: Scheduler, val usersRepo: IGithubUsersRepo, val router: Router, val screens: IScreens) :
-    MvpPresenter<UsersView>() {
-
+class UsersPresenter(val uiScheduler: Scheduler, val usersRepo: IGithubUsersRepo, val router: Router, val screens: IScreens) : MvpPresenter<UsersView>() {
     class UsersListPresenter : IUserListPresenter {
         val users = mutableListOf<GithubUser>()
         override var itemClickListener: ((UserItemView) -> Unit)? = null
@@ -21,8 +19,8 @@ class UsersPresenter(val uiScheduler: Scheduler, val usersRepo: IGithubUsersRepo
 
         override fun bindView(view: UserItemView) {
             val user = users[view.pos]
-            view.setLogin(user.login)
-            view.loadAvatar(user.avatarUrl)
+            user.login?.let { view.setLogin(it) }
+            user.avatarUrl?.let {view.loadAvatar(it)}
         }
     }
 
