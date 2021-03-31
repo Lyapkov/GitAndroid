@@ -1,44 +1,48 @@
 package com.example.android2.mvp.presenter
 
-import com.example.android2.mvp.model.entity.GithubRepos
+import com.example.android2.mvp.model.entity.GithubRepository
 import com.github.terrakok.cicerone.Router
 import moxy.MvpPresenter
 import com.example.android2.mvp.model.entity.GithubUser
-import com.example.android2.mvp.model.repo.IGithubUsersRepo
-import com.example.android2.mvp.presenter.list.IReposListPresenter
+import com.example.android2.mvp.model.navigation.IScreens
+import com.example.android2.mvp.model.repo.IGithubRepositoriesRepo
+import com.example.android2.mvp.presenter.list.IRepositoryListPresenter
 import com.example.android2.mvp.view.UserView
-import com.example.android2.mvp.view.list.ReposItemView
+import com.example.android2.mvp.view.list.RepositoryItemView
 import io.reactivex.rxjava3.core.Scheduler
 
-class UserPresenter(val uiScheduler: Scheduler, val usersRepo: IGithubUsersRepo, val router: Router, val user: GithubUser) : MvpPresenter<UserView>() {
+class UserPresenter(val uiScheduler: Scheduler, val repositoriesRepo: IGithubRepositoriesRepo, val router: Router, val user: GithubUser, val screens: IScreens) : MvpPresenter<UserView>() {
 
-    class ReposListPresenter : IReposListPresenter {
-        val repos = mutableListOf<GithubRepos>()
-        override var itemClickListener: ((ReposItemView) -> Unit)? = null
+    class RepositoriesListPresenter : IRepositoryListPresenter {
+        val repositories = mutableListOf<GithubRepository>()
+        override var itemClickListener: ((RepositoryItemView) -> Unit)? = null
+        override fun getCount() = repositories.size
 
-        override fun getCount() = repos.size
-
-        override fun bindView(view: ReposItemView) {
-            val repo = repos[view.pos]
-            view.setName(repo.name)
+        override fun bindView(view: RepositoryItemView) {
+            val repository = repositories[view.pos]
+            repository.name?.let { view.setName(it) }
         }
     }
 
-    val reposListPresenter = ReposListPresenter()
+    val repositoriesListPresenter = RepositoriesListPresenter()
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-        viewState.setLogin(user.login)
         viewState.init()
         loadData()
+
+        repositoriesListPresenter.itemClickListener = { itemView ->
+            val repository = repositoriesListPresenter.repositories[itemView.pos]
+            router.navigateTo(screens.repository(repository))
+        }
     }
 
     fun loadData() {
-        usersRepo.getUserRepos(user.reposUrl)
+        repositoriesRepo.getRepositories(user)
             .observeOn(uiScheduler)
-            .subscribe({ repos ->
-                reposListPresenter.repos.clear()
-                reposListPresenter.repos.addAll(repos)
+            .subscribe({ repositories ->
+                repositoriesListPresenter.repositories.clear()
+                repositoriesListPresenter.repositories.addAll(repositories)
                 viewState.updateList()
             }, {
                 println("Error: ${it.message}")
