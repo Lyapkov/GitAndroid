@@ -8,5 +8,6 @@ class RoomGithubUser(
     @PrimaryKey val id: String,
     val login: String,
     val avatarUrl: String? = null,
-    val reposUrl: String? = null
+    val reposUrl: String? = null,
+    val uriImage: String? = null
 )

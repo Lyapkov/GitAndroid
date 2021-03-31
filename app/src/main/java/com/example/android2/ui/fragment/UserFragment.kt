@@ -11,6 +11,7 @@ import moxy.ktx.moxyPresenter
 import com.example.android2.mvp.model.entity.GithubUser
 import com.example.android2.mvp.model.entity.room.db.Database
 import com.example.android2.mvp.model.repo.RetrofitGithubRepositoriesRepo
+import com.example.android2.mvp.model.storage.room.RepositoryStorage
 import com.example.android2.mvp.presenter.UserPresenter
 import com.example.android2.mvp.view.UserView
 import com.example.android2.ui.App
@@ -39,7 +40,7 @@ class UserFragment : MvpAppCompatFragment(), UserView, BackButtonListener {
             RetrofitGithubRepositoriesRepo(
                 ApiHolder.api,
                 AndroidNetworkStatus(App.instance),
-                Database.getInstance()
+                RepositoryStorage(Database.getInstance())
             ),
             App.instance.router,
             user,

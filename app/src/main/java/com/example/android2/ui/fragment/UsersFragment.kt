@@ -5,12 +5,12 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.android2.databinding.FragmentUsersBinding
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
-import moxy.MvpAppCompatFragment
-import moxy.ktx.moxyPresenter
 import com.example.android2.mvp.model.api.ApiHolder
+import com.example.android2.mvp.model.entity.room.RoomGithubImage
 import com.example.android2.mvp.model.entity.room.db.Database
 import com.example.android2.mvp.model.repo.RetrofitGithubUsersRepo
+import com.example.android2.mvp.model.storage.room.ImageStorage
+import com.example.android2.mvp.model.storage.room.UserStorage
 import com.example.android2.mvp.presenter.UsersPresenter
 import com.example.android2.mvp.view.UsersView
 import com.example.android2.ui.App
@@ -19,6 +19,9 @@ import com.example.android2.ui.adapter.UsersRVAdapter
 import com.example.android2.ui.image.GlideImageLoader
 import com.example.android2.ui.navigation.AndroidScreens
 import com.example.android2.ui.network.AndroidNetworkStatus
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import moxy.MvpAppCompatFragment
+import moxy.ktx.moxyPresenter
 
 class UsersFragment : MvpAppCompatFragment(), UsersView, BackButtonListener {
     companion object {
@@ -31,7 +34,7 @@ class UsersFragment : MvpAppCompatFragment(), UsersView, BackButtonListener {
             RetrofitGithubUsersRepo(
                 ApiHolder.api,
                 AndroidNetworkStatus(App.instance),
-                Database.getInstance()
+                UserStorage(Database.getInstance())
             ),
             App.instance.router, AndroidScreens(),
         )
@@ -57,7 +60,12 @@ class UsersFragment : MvpAppCompatFragment(), UsersView, BackButtonListener {
 
     override fun init() {
         vb?.rvUsers?.layoutManager = LinearLayoutManager(context)
-        adapter = UsersRVAdapter(presenter.usersListPresenter, GlideImageLoader())
+        adapter = UsersRVAdapter(
+            presenter.usersListPresenter, GlideImageLoader(
+                ImageStorage(Database.getInstance(), App.instance.cacheDir),
+                AndroidNetworkStatus(requireContext())
+            )
+        )
         vb?.rvUsers?.adapter = adapter
     }
 
