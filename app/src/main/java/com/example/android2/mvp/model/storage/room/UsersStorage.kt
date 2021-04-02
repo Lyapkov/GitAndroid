@@ -3,12 +3,12 @@ package com.example.android2.mvp.model.storage.room
 import com.example.android2.mvp.model.entity.GithubUser
 import com.example.android2.mvp.model.entity.room.RoomGithubUser
 import com.example.android2.mvp.model.entity.room.db.Database
-import com.example.android2.mvp.model.storage.IUserStorage
+import com.example.android2.mvp.model.storage.IUsersStorage
 import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.schedulers.Schedulers
 
-class UserStorage(val db: Database) : IUserStorage {
+class UsersStorage(val db: Database) : IUsersStorage {
     override fun putUsers(users: List<GithubUser>): Completable =
         Completable.fromAction {
             val roomUsers = users.map { user ->

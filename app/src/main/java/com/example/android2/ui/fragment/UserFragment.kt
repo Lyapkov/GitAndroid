@@ -42,10 +42,8 @@ class UserFragment : MvpAppCompatFragment(), UserView, BackButtonListener {
                 AndroidNetworkStatus(App.instance),
                 RepositoryStorage(Database.getInstance())
             ),
-            App.instance.router,
-            user,
-            AndroidScreens()
-        )
+            user
+        ).apply { App.instance.appComponent.inject(this) }
     }
 
     private var vb: FragmentUserBinding? = null

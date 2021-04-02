@@ -6,11 +6,10 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.android2.databinding.FragmentUsersBinding
 import com.example.android2.mvp.model.api.ApiHolder
-import com.example.android2.mvp.model.entity.room.RoomGithubImage
 import com.example.android2.mvp.model.entity.room.db.Database
 import com.example.android2.mvp.model.repo.RetrofitGithubUsersRepo
 import com.example.android2.mvp.model.storage.room.ImageStorage
-import com.example.android2.mvp.model.storage.room.UserStorage
+import com.example.android2.mvp.model.storage.room.UsersStorage
 import com.example.android2.mvp.presenter.UsersPresenter
 import com.example.android2.mvp.view.UsersView
 import com.example.android2.ui.App
@@ -30,14 +29,8 @@ class UsersFragment : MvpAppCompatFragment(), UsersView, BackButtonListener {
 
     val presenter: UsersPresenter by moxyPresenter {
         UsersPresenter(
-            AndroidSchedulers.mainThread(),
-            RetrofitGithubUsersRepo(
-                ApiHolder.api,
-                AndroidNetworkStatus(App.instance),
-                UserStorage(Database.getInstance())
-            ),
-            App.instance.router, AndroidScreens(),
-        )
+            AndroidSchedulers.mainThread()
+        ).apply { App.instance.appComponent.inject(this) }
     }
 
     var adapter: UsersRVAdapter? = null

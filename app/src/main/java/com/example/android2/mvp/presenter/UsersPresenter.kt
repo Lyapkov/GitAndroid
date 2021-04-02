@@ -9,8 +9,19 @@ import com.example.android2.mvp.model.repo.IGithubUsersRepo
 import com.example.android2.mvp.presenter.list.IUserListPresenter
 import com.example.android2.mvp.view.UsersView
 import com.example.android2.mvp.view.list.UserItemView
+import javax.inject.Inject
 
-class UsersPresenter(val uiScheduler: Scheduler, val usersRepo: IGithubUsersRepo, val router: Router, val screens: IScreens) : MvpPresenter<UsersView>() {
+class UsersPresenter(val uiScheduler: Scheduler) : MvpPresenter<UsersView>() {
+
+    @Inject
+    lateinit var usersRepo: IGithubUsersRepo
+
+    @Inject
+    lateinit var screens: IScreens
+
+    @Inject
+    lateinit var router: Router
+
     class UsersListPresenter : IUserListPresenter {
         val users = mutableListOf<GithubUser>()
         override var itemClickListener: ((UserItemView) -> Unit)? = null
@@ -20,7 +31,7 @@ class UsersPresenter(val uiScheduler: Scheduler, val usersRepo: IGithubUsersRepo
         override fun bindView(view: UserItemView) {
             val user = users[view.pos]
             user.login?.let { view.setLogin(it) }
-            user.avatarUrl?.let {view.loadAvatar(it)}
+            user.avatarUrl?.let { view.loadAvatar(it) }
         }
     }
 
