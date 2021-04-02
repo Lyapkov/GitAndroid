@@ -2,8 +2,11 @@ package com.example.android2.di.module
 
 import com.example.android2.mvp.model.api.IDataSource
 import com.example.android2.mvp.model.network.INetworkStatus
+import com.example.android2.mvp.model.repo.IGithubRepositoriesRepo
 import com.example.android2.mvp.model.repo.IGithubUsersRepo
+import com.example.android2.mvp.model.repo.RetrofitGithubRepositoriesRepo
 import com.example.android2.mvp.model.repo.RetrofitGithubUsersRepo
+import com.example.android2.mvp.model.storage.IRepositoryStorage
 import com.example.android2.mvp.model.storage.IUsersStorage
 import dagger.Module
 import dagger.Provides
@@ -19,5 +22,13 @@ class RepoModule {
         networkStatus: INetworkStatus,
         storage: IUsersStorage
     ): IGithubUsersRepo = RetrofitGithubUsersRepo(api, networkStatus, storage)
+
+    @Singleton
+    @Provides
+    fun repositoriesRepo(
+        api: IDataSource,
+        networkStatus: INetworkStatus,
+        storage: IRepositoryStorage
+    ): IGithubRepositoriesRepo = RetrofitGithubRepositoriesRepo(api, networkStatus, storage)
 
 }

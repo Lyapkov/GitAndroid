@@ -8,8 +8,13 @@ import com.example.android2.databinding.ItemUserBinding
 import com.example.android2.mvp.model.image.IImageLoader
 import com.example.android2.mvp.presenter.list.IUserListPresenter
 import com.example.android2.mvp.view.list.UserItemView
+import com.example.android2.ui.image.GlideImageLoader
+import javax.inject.Inject
 
-class UsersRVAdapter(val presenter: IUserListPresenter, val imageLoader: IImageLoader<ImageView>) : RecyclerView.Adapter<UsersRVAdapter.ViewHolder>() {
+class UsersRVAdapter(val presenter: IUserListPresenter) : RecyclerView.Adapter<UsersRVAdapter.ViewHolder>() {
+
+    @Inject
+    lateinit var imageLoader: IImageLoader<ImageView>
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
         ViewHolder(ItemUserBinding.inflate(LayoutInflater.from(parent.context), parent, false)).apply {

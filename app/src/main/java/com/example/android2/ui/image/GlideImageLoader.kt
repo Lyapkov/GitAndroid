@@ -11,14 +11,22 @@ import com.example.android2.mvp.model.image.IImageLoader
 import com.example.android2.mvp.model.network.INetworkStatus
 import com.example.android2.mvp.model.storage.IImageStorage
 import java.io.ByteArrayOutputStream
+import javax.inject.Inject
 
-class GlideImageLoader(val storage: IImageStorage, val networkStatus: INetworkStatus) : IImageLoader<ImageView> {
+class GlideImageLoader(val storage: IImageStorage, val networkStatus: INetworkStatus) :
+    IImageLoader<ImageView> {
+
     override fun loadInto(url: String, container: ImageView) {
         Glide.with(container.context)
             .asBitmap()
             .load(url)
             .listener(object : RequestListener<Bitmap> {
-                override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Bitmap>?, isFirstResource: Boolean): Boolean {
+                override fun onLoadFailed(
+                    e: GlideException?,
+                    model: Any?,
+                    target: Target<Bitmap>?,
+                    isFirstResource: Boolean
+                ): Boolean {
                     //Обработка провала загрузки
                     return false
                 }
@@ -30,7 +38,8 @@ class GlideImageLoader(val storage: IImageStorage, val networkStatus: INetworkSt
                     dataSource: DataSource?,
                     isFirstResource: Boolean
                 ): Boolean {
-                    val compressFormat = if (url.contains(".jpg")) Bitmap.CompressFormat.JPEG else Bitmap.CompressFormat.PNG
+                    val compressFormat =
+                        if (url.contains(".jpg")) Bitmap.CompressFormat.JPEG else Bitmap.CompressFormat.PNG
                     val stream = ByteArrayOutputStream()
                     bitmap?.compress(compressFormat, 100, stream)
                     val bytes = stream.use { it.toByteArray() }

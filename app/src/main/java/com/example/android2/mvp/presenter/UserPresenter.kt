@@ -11,10 +11,9 @@ import com.example.android2.mvp.view.UserView
 import com.example.android2.mvp.view.list.RepositoryItemView
 import io.reactivex.rxjava3.core.Scheduler
 import javax.inject.Inject
+import javax.inject.Named
 
 class UserPresenter(
-    val uiScheduler: Scheduler,
-    val repositoriesRepo: IGithubRepositoriesRepo,
     val user: GithubUser
 ) : MvpPresenter<UserView>() {
 
@@ -22,6 +21,12 @@ class UserPresenter(
     lateinit var router: Router
     @Inject
     lateinit var screens: IScreens
+    @Inject
+    lateinit var repositoriesRepo: IGithubRepositoriesRepo
+    @field:Named("uiScheduler")
+    @Inject
+    lateinit var uiScheduler: Scheduler
+
 
     class RepositoriesListPresenter : IRepositoryListPresenter {
         val repositories = mutableListOf<GithubRepository>()
