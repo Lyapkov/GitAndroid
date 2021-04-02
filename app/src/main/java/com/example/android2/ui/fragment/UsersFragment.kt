@@ -5,20 +5,12 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.android2.databinding.FragmentUsersBinding
-import com.example.android2.mvp.model.api.ApiHolder
-import com.example.android2.mvp.model.entity.room.db.Database
-import com.example.android2.mvp.model.repo.RetrofitGithubUsersRepo
-import com.example.android2.mvp.model.storage.room.ImageStorage
-import com.example.android2.mvp.model.storage.room.UsersStorage
 import com.example.android2.mvp.presenter.UsersPresenter
 import com.example.android2.mvp.view.UsersView
 import com.example.android2.ui.App
 import com.example.android2.ui.BackButtonListener
 import com.example.android2.ui.adapter.UsersRVAdapter
 import com.example.android2.ui.image.GlideImageLoader
-import com.example.android2.ui.navigation.AndroidScreens
-import com.example.android2.ui.network.AndroidNetworkStatus
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import moxy.MvpAppCompatFragment
 import moxy.ktx.moxyPresenter
 
@@ -28,9 +20,7 @@ class UsersFragment : MvpAppCompatFragment(), UsersView, BackButtonListener {
     }
 
     val presenter: UsersPresenter by moxyPresenter {
-        UsersPresenter(
-            AndroidSchedulers.mainThread()
-        ).apply { App.instance.appComponent.inject(this) }
+        UsersPresenter().apply { App.instance.appComponent.inject(this) }
     }
 
     var adapter: UsersRVAdapter? = null
@@ -54,11 +44,8 @@ class UsersFragment : MvpAppCompatFragment(), UsersView, BackButtonListener {
     override fun init() {
         vb?.rvUsers?.layoutManager = LinearLayoutManager(context)
         adapter = UsersRVAdapter(
-            presenter.usersListPresenter, GlideImageLoader(
-                ImageStorage(Database.getInstance(), App.instance.cacheDir),
-                AndroidNetworkStatus(requireContext())
-            )
-        )
+            presenter.usersListPresenter
+        ).apply { App.instance.appComponent.inject(this) }
         vb?.rvUsers?.adapter = adapter
     }
 

@@ -5,21 +5,14 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.android2.databinding.FragmentUserBinding
-import com.example.android2.mvp.model.api.ApiHolder
-import moxy.MvpAppCompatFragment
-import moxy.ktx.moxyPresenter
 import com.example.android2.mvp.model.entity.GithubUser
-import com.example.android2.mvp.model.entity.room.db.Database
-import com.example.android2.mvp.model.repo.RetrofitGithubRepositoriesRepo
-import com.example.android2.mvp.model.storage.room.RepositoryStorage
 import com.example.android2.mvp.presenter.UserPresenter
 import com.example.android2.mvp.view.UserView
 import com.example.android2.ui.App
 import com.example.android2.ui.BackButtonListener
 import com.example.android2.ui.adapter.RepositoriesRVAdapter
-import com.example.android2.ui.navigation.AndroidScreens
-import com.example.android2.ui.network.AndroidNetworkStatus
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import moxy.MvpAppCompatFragment
+import moxy.ktx.moxyPresenter
 
 class UserFragment : MvpAppCompatFragment(), UserView, BackButtonListener {
 
@@ -36,12 +29,6 @@ class UserFragment : MvpAppCompatFragment(), UserView, BackButtonListener {
     val presenter: UserPresenter by moxyPresenter {
         val user = arguments?.getParcelable<GithubUser>(USER_ARG) as GithubUser
         UserPresenter(
-            AndroidSchedulers.mainThread(),
-            RetrofitGithubRepositoriesRepo(
-                ApiHolder.api,
-                AndroidNetworkStatus(App.instance),
-                RepositoryStorage(Database.getInstance())
-            ),
             user
         ).apply { App.instance.appComponent.inject(this) }
     }

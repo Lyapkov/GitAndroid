@@ -6,6 +6,8 @@ import com.example.android2.mvp.presenter.RepositoryPresenter
 import com.example.android2.mvp.presenter.UserPresenter
 import com.example.android2.mvp.presenter.UsersPresenter
 import com.example.android2.ui.activity.MainActivity
+import com.example.android2.ui.adapter.UsersRVAdapter
+import com.example.android2.ui.image.GlideImageLoader
 import dagger.Component
 import javax.inject.Singleton
 
@@ -16,7 +18,8 @@ import javax.inject.Singleton
         CiceroneModule::class,
         ApiModule::class,
         RepoModule::class,
-        StorageModule::class
+        StorageModule::class,
+        SchedulersModule::class
     ]
 )
 interface AppComponent {
@@ -26,4 +29,5 @@ interface AppComponent {
     fun inject(usersPresenter: UsersPresenter)
     fun inject(userPresenter: UserPresenter)
     fun inject(repositoryPresenter: RepositoryPresenter)
+    fun inject(usersRVAdapter: UsersRVAdapter)
 }

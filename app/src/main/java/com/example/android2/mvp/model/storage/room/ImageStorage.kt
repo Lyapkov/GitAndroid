@@ -10,8 +10,10 @@ import io.reactivex.rxjava3.schedulers.Schedulers
 import java.io.File
 import java.io.FileOutputStream
 import java.util.*
+import javax.inject.Inject
 
 class ImageStorage(val db: Database, val dir: File) : IImageStorage {
+
     override fun contains(url: String): Single<Boolean> = Single.fromCallable {
         db.imageDao.findByUrl(url) != null
     }.subscribeOn(Schedulers.io())

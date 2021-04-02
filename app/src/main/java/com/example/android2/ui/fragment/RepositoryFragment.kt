@@ -15,7 +15,7 @@ import moxy.ktx.moxyPresenter
 class RepositoryFragment : MvpAppCompatFragment(), RepositoryView, BackButtonListener {
 
     companion object {
-        private const val REPOSITORY_ARG = "repository"
+        const val REPOSITORY_ARG = "repository"
 
         fun newInstance(repository: GithubRepository) = RepositoryFragment().apply {
             arguments = Bundle().apply {
@@ -28,7 +28,7 @@ class RepositoryFragment : MvpAppCompatFragment(), RepositoryView, BackButtonLis
 
     val presenter: RepositoryPresenter by moxyPresenter {
         val repository = arguments?.getParcelable<GithubRepository>(REPOSITORY_ARG) as GithubRepository
-        RepositoryPresenter(repository)
+        RepositoryPresenter(repository).apply { App.instance.appComponent.inject(this) }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?) =

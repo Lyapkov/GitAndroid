@@ -10,17 +10,19 @@ import com.example.android2.mvp.presenter.list.IUserListPresenter
 import com.example.android2.mvp.view.UsersView
 import com.example.android2.mvp.view.list.UserItemView
 import javax.inject.Inject
+import javax.inject.Named
 
-class UsersPresenter(val uiScheduler: Scheduler) : MvpPresenter<UsersView>() {
+class UsersPresenter() : MvpPresenter<UsersView>() {
 
     @Inject
     lateinit var usersRepo: IGithubUsersRepo
-
     @Inject
     lateinit var screens: IScreens
-
     @Inject
     lateinit var router: Router
+    @field:Named("uiScheduler")
+    @Inject
+    lateinit var uiScheduler: Scheduler
 
     class UsersListPresenter : IUserListPresenter {
         val users = mutableListOf<GithubUser>()
